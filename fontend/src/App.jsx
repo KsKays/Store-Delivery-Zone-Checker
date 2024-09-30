@@ -1,16 +1,20 @@
 import { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import axios from "axios";
+import L from "leaflet"; // Import Leaflet
 import "./App.css";
+import homeIcon from "./assets/home.png";
 
+// Define base URL for API
 const base_url = import.meta.env.VITE_API_BASE_URL;
 
-function App() {
-  const center = [13.838608902447351, 100.02528408837135]; // SE NPRU
-  const [stores, setStores] = useState([]);
-  const [myLocation, setMylocation] = useState({lat:"", lng:""})
 
+
+function App() {
+  const center = [13.83860399048006, 100.02528022088828]; // SE NPRU
+  const [stores, setStores] = useState([]);
+  const [myLocation, setMylocation] = useState({ lat: "", lng: "" });
   useEffect(() => {
     const fetchStore = async () => {
       try {
@@ -25,14 +29,34 @@ function App() {
     fetchStore();
   }, []);
 
-  const handleGetLocation = () =>{
-    navigator.geolocation.getCurrentPosition((position)=>{
-      setMylocation({
-        lat:position.coords.latitude,
-        lng:position.coords.longitude
-      })
-    })
+ 
+  const LocationMap = () =>{
+     useMapEvents({
+       click(e) {
+         const { lat, lng } = e.latlng;
+         setMylocation({ lat, lng });
+         console.log("Clicked at latitue");
+       },
+     });
+
   }
+
+  // Create a custom icon for the home marker
+  const customHomeIcon = new L.Icon({
+    iconUrl: homeIcon,
+    iconSize: [32, 32], // Size of the icon
+  
+  });
+
+  const handleGetLocation = () => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      setMylocation({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      });
+    });
+  };
+
   return (
     <>
       <div>
@@ -49,18 +73,19 @@ function App() {
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            {/**Display My Location */}
-            <Marker
-              position={[myLocation.lat, myLocation.lng]}
-              icon={housingIcon}
-            >
-              <Popup>My Current Position</Popup>
-            </Marker>
+            {/** Display My Location */}
+            {myLocation.lat && myLocation.lng && (
+              <Marker
+                position={[myLocation.lat, myLocation.lng]}
+                icon={customHomeIcon}
+              >
+                <Popup>My Current Position</Popup>
+              </Marker>
+            )}
 
             {/** Display all stores on Map */}
-            {/**
             {stores.map((store, index) => (
-              <Marker key={index} position={[store.lat, store.lng]}>
+              <Marker key={store.id} position={[store.lat, store.lng]}>
                 <Popup>
                   <b>{store.name}</b>
                   <p>{store.address}</p>
@@ -73,7 +98,10 @@ function App() {
                   </a>
                 </Popup>
               </Marker>
-            ))}*/}
+            ))}
+
+            {/**Choose Location on Map */}
+            <LocationMap />
           </MapContainer>
         </div>
       </div>
