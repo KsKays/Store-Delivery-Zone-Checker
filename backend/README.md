@@ -1,0 +1,4 @@
+#env
+
+PORT = 5000
+FRONTEND_URL = http://localhost:5173
