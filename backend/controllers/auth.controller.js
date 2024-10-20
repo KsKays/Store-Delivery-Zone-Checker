@@ -8,10 +8,16 @@ const { Op } = require("sequelize");
 
 // Register a new user
 exports.signup = async (req, res) => {
-  const { username, email, password, address } = req.body;
-
+  const { username, email, password } = req.body;
+  //const { username, email, password, address } = req.body;
   // Validate input fields
-  if (!username || !email || !password || !address) {
+  // if (!username || !email || !password || !address) {
+  //   return res.status(400).send({
+  //     message: "Please provide all required fields!",
+  //   });
+  // }
+
+  if (!username || !email || !password) {
     return res.status(400).send({
       message: "Please provide all required fields!",
     });
@@ -22,7 +28,7 @@ exports.signup = async (req, res) => {
     username,
     email,
     password: bcrypt.hashSync(password, 8),
-    address,
+    // address,
   };
 
   try {

@@ -1,13 +1,11 @@
-// MyLocation.jsx
-import React from "react";
-import { Marker, Circle } from "react-leaflet";
+import { Marker, Popup } from "react-leaflet"; // ลบ Circle ออก
 import L from "leaflet";
-import homeIcon from "../assets/home.png"; // Ensure this path is correct
+import homeIcon from "../assets/home.png"; // ตรวจสอบให้แน่ใจว่าพาธนี้ถูกต้อง
 
 const MyLocation = ({ myLocation }) => {
   const customHomeIcon = new L.Icon({
     iconUrl: homeIcon,
-    iconSize: [32, 32], // Size of the icon
+    iconSize: [45, 45], // ขนาดของไอคอน
   });
 
   return (
@@ -18,17 +16,18 @@ const MyLocation = ({ myLocation }) => {
             position={[myLocation.lat, myLocation.lng]}
             icon={customHomeIcon}
           >
-            <Popup>My Current Position</Popup>
+            <Popup>ตำแหน่งปัจจุบันของฉัน</Popup>
           </Marker>
-          <Circle
+
+          {/* <Circle
             center={[myLocation.lat, myLocation.lng]}
-            radius={500} // Example radius in meters
+            radius={500} // รัศมีตัวอย่างในเมตร
             pathOptions={{
-              color: "#87CEEB", // Light blue color for the outline
-              fillColor: "#87CEEB", // Light blue fill color
-              fillOpacity: 0.3, // Semi-transparent light blue
+              color: "#87CEEB", // สีฟ้าอ่อนสำหรับขอบ
+              fillColor: "#87CEEB", // สีฟ้าอ่อนสำหรับเติม
+              fillOpacity: 0.3, // สีฟ้าอ่อนโปร่งใส
             }}
-          />
+          /> */}
         </>
       )}
     </>

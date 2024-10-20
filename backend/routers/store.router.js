@@ -3,7 +3,7 @@ const router = express.Router();
 const storeController = require("../controllers/store.controller");
 const { authJwt } = require("../middlewares");
 
-//Create a restaurant ( Admin and Mod can use it! )
+//Create a store ( Admin and Mod can use it! )
 //PORT =>  http://localhost:5000/api/v1/store/
 router.post(
   "/",
@@ -11,20 +11,20 @@ router.post(
   storeController.create
 );
 
-//Get all restaurant
+//Get all store
 router.get("/", storeController.getAll);
 
-//Get ById restaurant
+//Get ById store
 router.get("/:id", [authJwt.verifyToken], storeController.getById);
 
-//Update a restaurant ( Admin and Mod can use it! )
+//Update a store ( Admin and Mod can use it! )
 router.put(
   "/:id",
   [authJwt.verifyToken, authJwt.isModOrAdmin],
   storeController.update
 );
 
-//Delete a restaurant ( Admin can use it! )
+//Delete a store ( Admin can use it! )
 router.delete(
   "/:id",
   [authJwt.verifyToken, authJwt.isAdmin],

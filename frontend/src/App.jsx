@@ -1,70 +1,18 @@
 import { useState, useEffect } from "react";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  Circle,
-  useMapEvents,
-} from "react-leaflet";
+import { MapContainer, TileLayer, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import axios from "axios";
-import L from "leaflet";
-import "./App.css";
-import homeIcon from "./assets/home.png"; // Ensure this path is correct
-import storeIcon from "./assets/grocery-store.png"; // Ensure this path and the file extension are correct
 import Swal from "sweetalert2";
-
-// Define base URL for API
+import MyLocation from "./components/MyLocation";
+import Stores from "./components/Stores";
+// กำหนด URL หลักสำหรับ API
 const base_url = import.meta.env.VITE_API_BASE_URL;
 
 function App() {
   const center = [13.83860399048006, 100.02528022088828]; // SE NPRU
   const [stores, setStores] = useState([]);
   const [myLocation, setMylocation] = useState({ lat: "", lng: "" });
-  const [selectedStore, setSelectedStore] = useState(null); // State to track selected store
-
-  // Custom icons for default and selected markers
-  const defaultIcon = new L.Icon({
-    iconUrl:
-      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
-    iconSize: [25, 41], // Default size
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowUrl:
-      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-    shadowSize: [41, 41],
-  });
-
-  const selectedIcon = new L.Icon({
-    iconUrl:
-      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-red.png",
-    iconSize: [25, 41], // Same size, different color (red)
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowUrl:
-      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-    shadowSize: [41, 41],
-  });
-
-  // Function to calculate distance between 2 points using Haversine Formula
-  const calculateDistance = (lat1, lng1, lat2, lng2) => {
-    const R = 6371e3; // Earth radius in meters
-    const phi_1 = (lat1 * Math.PI) / 180;
-    const phi_2 = (lat2 * Math.PI) / 180;
-
-    const delta_phi = ((lat1 - lat2) * Math.PI) / 180;
-    const delta_lambda = ((lng1 - lng2) * Math.PI) / 180;
-
-    const a =
-      Math.sin(delta_phi / 2) * Math.sin(delta_phi / 2) +
-      Math.cos(phi_1) *
-        Math.cos(phi_2) *
-        Math.sin(delta_lambda / 2) *
-        Math.sin(delta_lambda / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Distance in meters
-  };
+  const [selectedStore, setSelectedStore] = useState(null); // สถานะเพื่อติดตามร้านค้าที่เลือก
 
   useEffect(() => {
     const fetchStores = async () => {
@@ -74,11 +22,32 @@ function App() {
           setStores(response.data);
         }
       } catch (error) {
-        console.error("Error fetching stores:", error);
+        console.error("เกิดข้อผิดพลาดในการดึงข้อมูลร้านค้า:", error);
       }
     };
     fetchStores();
   }, []);
+
+  // ฟังก์ชันคำนวณระยะทาง
+  const calculateDistance = (lat1, lng1, lat2, lng2) => {
+    const R = 6371e3; // รัศมีของโลก (เมตร)
+    const phi_1 = (lat1 * Math.PI) / 180; // แปลงพิกัดจากองศาเป็นเรเดียน
+    const phi_2 = (lat2 * Math.PI) / 180;
+
+    const delta_phi = ((lat2 - lat1) * Math.PI) / 180; // เปลี่ยนตำแหน่งของ lat1 และ lat2
+    const delta_lambda = ((lng2 - lng1) * Math.PI) / 180; // เปลี่ยนตำแหน่งของ lng1 และ lng2
+
+    const a =
+      Math.sin(delta_phi / 2) * Math.sin(delta_phi / 2) +
+      Math.cos(phi_1) *
+        Math.cos(phi_2) *
+        Math.sin(delta_lambda / 2) *
+        Math.sin(delta_lambda / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c; // คืนค่าระยะทาง (เมตร)s
+  };
 
   const LocationMap = () => {
     useMapEvents({
@@ -88,18 +57,6 @@ function App() {
       },
     });
   };
-
-  // Custom icon for the home marker
-  const customHomeIcon = new L.Icon({
-    iconUrl: homeIcon,
-    iconSize: [32, 32], // Size of the icon
-  });
-
-  // Custom icon for the Store marker
-  const customStoreIcon = new L.Icon({
-    iconUrl: storeIcon, // Use the correct icon path here
-    iconSize: [32, 32], // Size of the icon
-  });
 
   const handleGetLocation = () => {
     navigator.geolocation.getCurrentPosition((position) => {
@@ -113,20 +70,20 @@ function App() {
   const handleLocationCheck = () => {
     if (!myLocation.lat || !myLocation.lng) {
       Swal.fire({
-        title: "Error!",
-        text: "Please enter a valid Location",
+        title: "ข้อผิดพลาด!",
+        text: "กรุณาใส่ตำแหน่งที่ถูกต้อง",
         icon: "error",
-        confirmButtonText: "OK",
+        confirmButtonText: "ตกลง",
       });
       return;
     }
 
     if (!selectedStore) {
       Swal.fire({
-        title: "Error!",
-        text: "Please select a store to check delivery zone",
+        title: "ข้อผิดพลาด!",
+        text: "กรุณาเลือกร้านค้าที่จะตรวจสอบพื้นที่จัดส่ง",
         icon: "error",
-        confirmButtonText: "OK",
+        confirmButtonText: "ตกลง",
       });
       return;
     }
@@ -138,40 +95,42 @@ function App() {
       selectedStore.lng
     );
 
-    if (distance <= selectedStore.raduis) {
+    if (distance <= selectedStore.radius) {
       Swal.fire({
-        title: "Success!",
-        text: `You are within the delivery zone for ${selectedStore.name}.`,
+        title: "สำเร็จ!",
+        text: `คุณอยู่ในพื้นที่จัดส่งสำหรับ ${selectedStore.name}.`,
         icon: "success",
-        confirmButtonText: "OK",
+        confirmButtonText: "ตกลง",
       });
     } else {
       Swal.fire({
-        title: "Error!",
-        text: `You are outside the delivery zone for ${selectedStore.name}.`,
+        title: "ข้อผิดพลาด!",
+        text: `คุณอยู่นอกพื้นที่จัดส่งสำหรับ ${selectedStore.name}.`,
         icon: "error",
-        confirmButtonText: "OK",
+        confirmButtonText: "ตกลง",
       });
     }
   };
 
   return (
-    <div>
-      <h1>Store Delivery Zone Checker</h1>
-      <button
-        className="bg-blue-500 text-white font-semibold py-2 px-4 rounded shadow-lg hover:bg-blue-600 transition duration-300 ease-in-out"
-        onClick={handleGetLocation}
-      >
-        Get My Location
-      </button>
-      <button
-        className="bg-green-500 text-white font-semibold py-2 px-4 rounded shadow-lg hover:bg-green-600 transition duration-300 ease-in-out"
-        onClick={handleLocationCheck}
-      >
-        Check Delivery Availability
-      </button>
+    <div className="flex flex-col items-center justify-center h-screen">
+      <h1 className="mb-8 text-3xl font-bold ">Store Delivery Zone Checker</h1>
+      <div className="space-x-4">
+        <button
+          className="bg-blue-500 text-white font-semibold py-2 px-4 rounded shadow-lg hover:bg-blue-600 transition duration-300 ease-in-out"
+          onClick={handleGetLocation}
+        >
+          Get My Location
+        </button>
+        <button
+          className="bg-green-500 text-white font-semibold py-2 px-4 rounded shadow-lg hover:bg-green-600 transition duration-300 ease-in-out"
+          onClick={handleLocationCheck}
+        >
+          Check Delivery Availability
+        </button>
+      </div>
 
-      <div className="mapContainer">
+      <div className="mapContainer mt-8">
         <MapContainer
           center={center}
           zoom={13}
@@ -182,68 +141,17 @@ function App() {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          {/** Display My Location */}
-          {myLocation.lat && myLocation.lng && (
-            <>
-              <Marker
-                position={[myLocation.lat, myLocation.lng]}
-                icon={customHomeIcon}
-              >
-                <Popup>My Current Position</Popup>
-              </Marker>
-              {/** Add Circle around My Location */}
-              <Circle
-                center={[myLocation.lat, myLocation.lng]}
-                radius={500} // Example radius in meters
-                pathOptions={{
-                  color: "#87CEEB", // Light blue color for the outline
-                  fillColor: "#87CEEB", // Light blue fill color
-                  fillOpacity: 0.3, // Semi-transparent light blue
-                }}
-              />
-            </>
-          )}
+          {/** แสดงตำแหน่งของฉัน */}
+          <MyLocation myLocation={myLocation} />
 
-          {/** Display all stores on Map */}
-          {stores.map((store) => (
-            <Marker
-              key={store.id}
-              position={[store.lat, store.lng]}
-              icon={customStoreIcon} // Use custom store icon here
-              eventHandlers={{
-                click: () => {
-                  setSelectedStore(store); // Set selected store on click
-                },
-              }}
-            >
-              <Popup>
-                <b>{store.name}</b>
-                <p>{store.address}</p>
-                <a
-                  href={store.direction}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Get Direction
-                </a>
-              </Popup>
+          {/** แสดงร้านค้าทั้งหมดบนแผนที่ */}
+          <Stores
+            stores={stores}
+            selectedStore={selectedStore}
+            setSelectedStore={setSelectedStore}
+          />
 
-              {/** Draw delivery area circle when store is selected */}
-              {selectedStore && selectedStore.id === store.id && (
-                <Circle
-                  center={[store.lat, store.lng]}
-                  radius={selectedStore.raduis}
-                  pathOptions={{
-                    color: "green",
-                    fillColor: "green",
-                    fillOpacity: 0.3, // Semi-transparent green
-                  }}
-                />
-              )}
-            </Marker>
-          ))}
-
-          {/**Choose Location on Map */}
+          {/** เลือกตำแหน่งบนแผนที่ */}
           <LocationMap />
         </MapContainer>
       </div>

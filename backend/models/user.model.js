@@ -22,7 +22,7 @@ const User = sequelize.define("user", {
   },
   address: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   latitude: {
     type: DataTypes.FLOAT,
