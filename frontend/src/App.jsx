@@ -123,7 +123,7 @@ function App() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
+    <div className="flex flex-col items-center justify-center mt-14">
       <h1 className="mb-8 text-3xl font-bold ">Store Delivery Zone Checker</h1>
       <div className="space-x-4">
         <button
@@ -144,7 +144,7 @@ function App() {
         <MapContainer
           center={center}
           zoom={13}
-          style={{ height: "75vh", width: "100vw" }}
+          style={{ height: "65vh", width: "80vw" }} // ลดขนาดลง
           scrollWheelZoom={true}
         >
           <TileLayer

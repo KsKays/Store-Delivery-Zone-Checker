@@ -6,7 +6,7 @@ const Layout = () => {
   return (
     <AuthProvider>
       <Navbar />
-      <div className="z-10">
+      <div className="z-10 ">
         <Outlet />
       </div>
     </AuthProvider>

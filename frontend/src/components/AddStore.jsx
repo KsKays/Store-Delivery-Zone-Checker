@@ -134,7 +134,7 @@ const AddStore = () => {
           {/* Delivery Radius */}
           <div className="relative">
             <span className="block text-lg font-medium text-gray-700 mt-3">
-              Delivery Radius (in km)
+              Delivery Radius (km)
             </span>
             <input
               type="number"

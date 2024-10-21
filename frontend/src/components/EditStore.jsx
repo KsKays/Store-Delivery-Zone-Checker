@@ -1,46 +1,77 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import StoreService from "../services/store.service"; // Make sure to create this service
 import Swal from "sweetalert2";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
-import { useAuthContext } from "../contexts/AuthContext";
+import { useNavigate, useParams } from "react-router-dom";
 
 const EditStore = () => {
-  const { id: storeId } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
-  const { updateStore } = useAuthContext(); // Ensure you have a context function for updating the store
-  const location = useLocation();
 
-  // Extract store properties from location state
-  const { storeName, address, latitude, longitude, deliveryRadius } =
-    location.state || {};
-
-  // Updated state to reflect store fields
   const [store, setStore] = useState({
-    storeName: storeName || "",
-    address: address || "",
-    latitude: latitude || "",
-    longitude: longitude || "",
-    deliveryRadius: deliveryRadius || "",
+    storeName: "",
+    address: "",
+    latitude: "",
+    longitude: "",
+    deliveryRadius: "",
+    getDirection: "",
   });
+
+  useEffect(() => {
+    const fetchStore = async () => {
+      try {
+        const response = await StoreService.getStoreById(id); // เรียกใช้ฟังก์ชันเพื่อดึงข้อมูลร้านค้า
+        if (response.status === 200) {
+          setStore(response.data); // กำหนดค่าให้ state
+        } else {
+          Swal.fire({
+            title: "Error",
+            text: "Failed to fetch store details.",
+            icon: "error",
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          title: "Error",
+          text: error?.message || "An error occurred while fetching the store",
+          icon: "error",
+        });
+      }
+    };
+
+    fetchStore(); // เรียกใช้ฟังก์ชันเมื่อโหลด
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setStore({ ...store, [name]: value }); // Update to setStore
+    setStore({ ...store, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      await updateStore(storeId, store); // Call the context method to update the store
-      Swal.fire({
-        title: "Store Updated",
-        text: "The store has been updated successfully.",
-        icon: "success",
-      });
-      navigate("/"); // Redirect after successful update
+      // Call StoreService to update the store, passing id and store data
+      const response = await StoreService.editStore(id, store); // ส่ง id และข้อมูลร้านค้า
+
+      // Check the response status
+      if (response.status === 200) {
+        Swal.fire({
+          title: "Store Updated",
+          text: "Your store has been successfully updated.",
+          icon: "success",
+        });
+        navigate("/"); // Redirect to store table or any other route
+      } else {
+        Swal.fire({
+          title: "Store Update Failed",
+          text: "The store could not be updated.",
+          icon: "error",
+        });
+      }
     } catch (error) {
       Swal.fire({
-        title: "Update Failed",
-        text: error?.message || "An error occurred while updating the store.",
+        title: "Store Update Failed",
+        text: error?.message || "An error occurred while updating the store",
         icon: "error",
       });
     }
@@ -122,7 +153,7 @@ const EditStore = () => {
           {/* Delivery Radius */}
           <div className="relative">
             <span className="block text-lg font-medium text-gray-700 mt-3">
-              Delivery Radius (in km)
+              Delivery Radius (km)
             </span>
             <input
               type="number"
@@ -135,12 +166,28 @@ const EditStore = () => {
             />
           </div>
 
+          {/* Get Direction */}
+          <div className="relative">
+            <span className="block text-lg font-medium text-gray-700 mt-3">
+              Get Direction
+            </span>
+            <input
+              type="text"
+              className="w-full pl-4 pr-4 py-3 text-ms border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+              placeholder="Get Direction"
+              name="getDirection"
+              value={store.getDirection}
+              onChange={handleChange}
+              required // Make this field required
+            />
+          </div>
+
           <div className="mb-6 text-center pt-5">
             <button
               className="btn btn-active btn-neutral text-white font-normal text-base"
               type="submit"
             >
-              Save Store
+              UPDATE STORE
             </button>
           </div>
         </form>

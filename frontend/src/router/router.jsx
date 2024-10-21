@@ -9,24 +9,23 @@ import StoreTable from "../components/StoreTable";
 
 const router = createBrowserRouter([
   {
-    path: "/", // ตั้งค่า path เป็น "/"
-    element: <Layout />, // ใช้ Layout
+    path: "/",
+    element: <Layout />,
     children: [
       {
         path: "/",
         element: <App />,
       },
-
       {
-        path: "/login", // เส้นทางสำหรับหน้า Login
+        path: "/login",
         element: <Login />,
       },
       {
-        path: "/register", // เส้นทางสำหรับหน้า Login
+        path: "/register",
         element: <Register />,
       },
       {
-        path: "/editstore", // เส้นทางสำหรับหน้า Login
+        path: "/editstore/store/:id",
         element: <EditStore />,
       },
       {
