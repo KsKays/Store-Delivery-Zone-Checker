@@ -12,12 +12,13 @@ const AddStore = () => {
     latitude: "",
     longitude: "",
     deliveryRadius: "",
+    getDirection: "",
     userId: "",
   });
 
   useEffect(() => {
     const userId = JSON.parse(localStorage.getItem("user"))?.id;
-    console.log(userId);
+    //console.log(userId);
     setStore({ ...store, userId });
   }, []);
 
@@ -141,6 +142,22 @@ const AddStore = () => {
               placeholder="Delivery Radius"
               name="deliveryRadius"
               value={store.deliveryRadius}
+              onChange={handleChange}
+              required // Make this field required
+            />
+          </div>
+
+          {/* Get Direction */}
+          <div className="relative">
+            <span className="block text-lg font-medium text-gray-700 mt-3">
+              Get Direction
+            </span>
+            <input
+              type="text"
+              className="w-full pl-4 pr-4 py-3 text-ms border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+              placeholder="Get Direction"
+              name="getDirection"
+              value={store.getDirection}
               onChange={handleChange}
               required // Make this field required
             />

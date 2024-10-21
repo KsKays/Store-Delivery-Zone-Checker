@@ -22,6 +22,10 @@ const Store = sequelize.define("store", {
     type: DataTypes.FLOAT,
     allowNull: false,
   },
+  getDirection: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,

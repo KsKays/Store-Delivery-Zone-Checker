@@ -25,37 +25,38 @@ const Stores = ({ stores, selectedStore, setSelectedStore }) => {
           <Popup>
             <b>{store.name}</b>
             <p>{store.address}</p>
-            <p>Delivery Radius: {store.radius} meters</p>{" "}
-            {/* แสดงรัศมีใน popup */}
-            <a href={store.direction} target="_blank" rel="noopener noreferrer">
+            <p>Delivery Radius: {store.radius} meters</p>
+            {/* แสดงปุ่ม Get Direction */}
+            <button
+              onClick={() => window.open(store.getDirection, "_blank")}
+              className="bg-blue-500 text-white font-semibold py-2 px-4 rounded shadow-lg hover:bg-blue-600 transition duration-300 ease-in-out"
+            >
               Get Direction
-            </a>
+            </button>
           </Popup>
 
           {/** วาดวงกลมเมื่อเลือก store */}
-          {
-            selectedStore &&
-              selectedStore.id === store.id &&
-              (selectedStore.radius > 0 ? ( // ตรวจสอบว่ารัศมีมากกว่าศูนย์
-                <Circle
-                  center={[store.lat, store.lng]}
-                  radius={selectedStore.radius} // ใช้รัศมีจาก store
-                  pathOptions={{
-                    color: "green",
-                    fillColor: "green",
-                    fillOpacity: 0.3, // สีเขียวโปร่งใส
-                  }}
-                >
-                  <Popup>
-                    <b>Delivery Zone for {store.name}</b>
-                    <p>
-                      This is the delivery area with a radius of{" "}
-                      {selectedStore.radius} meters.
-                    </p>
-                  </Popup>
-                </Circle>
-              ) : null) // ไม่วาด Circle ถ้ารัศมีไม่ถูกต้อง
-          }
+          {selectedStore &&
+            selectedStore.id === store.id &&
+            selectedStore.radius > 0 && ( // ตรวจสอบว่ารัศมีมากกว่าศูนย์
+              <Circle
+                center={[store.lat, store.lng]}
+                radius={selectedStore.radius} // ใช้รัศมีจาก store
+                pathOptions={{
+                  color: "lightblue", // เปลี่ยนสีของเส้นรอบวงกลม
+                  fillColor: "lightblue", // เปลี่ยนสีของวงกลม
+                  fillOpacity: 0.1, // ความโปร่งใสของสีฟ้า
+                }}
+              >
+                <Popup>
+                  <b>Delivery Zone for {store.name}</b>
+                  <p>
+                    This is the delivery area with a radius of{" "}
+                    {selectedStore.radius} meters.
+                  </p>
+                </Popup>
+              </Circle>
+            )}
         </Marker>
       ))}
     </>

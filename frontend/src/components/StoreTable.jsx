@@ -1,22 +1,18 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import { useAuthContext } from "../contexts/AuthContext";
-import { PenIcon, TrashIcon } from "./FontAwesome";
-
+// React component will use the context to manage stores.
+import { TrashIcon } from "./FontAwesome";
 const StoreTable = () => {
   const { stores, fetchStores, deleteStore } = useAuthContext();
   const navigate = useNavigate();
   const { user } = useAuthContext();
 
   useEffect(() => {
-    fetchStores();
+    fetchStores(); // fetch stores without axios, use context
   }, []);
 
   const handleDelete = (id, storeName) => {
     Swal.fire({
       title: "Are you sure?",
-      text: `Are you about to delete the store "${storeName}"?`,
+      text: `You are about to delete the store "${storeName}"`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -25,7 +21,7 @@ const StoreTable = () => {
       cancelButtonText: "Cancel",
     }).then((result) => {
       if (result.isConfirmed) {
-        deleteStore(id);
+        deleteStore(id); // directly delete store using context
         Swal.fire(
           "Deleted!",
           `The store "${storeName}" has been deleted.`,

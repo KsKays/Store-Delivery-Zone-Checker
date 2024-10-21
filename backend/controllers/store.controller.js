@@ -3,10 +3,24 @@ const Store = require("../models/store.model");
 
 // Create and Save a new store
 exports.create = async (req, res) => {
-  const { storeName, address, latitude, longitude, deliveryRadius, userId } =
-    req.body; // สลายโครงสร้าง
+  const {
+    storeName,
+    address,
+    latitude,
+    longitude,
+    deliveryRadius,
+    getDirection,
+    userId,
+  } = req.body; // สลายโครงสร้าง
   // Validate data
-  if (!storeName || !address || !latitude || !longitude || !deliveryRadius) {
+  if (
+    !storeName ||
+    !address ||
+    !latitude ||
+    !longitude ||
+    !deliveryRadius ||
+    !getDirection
+  ) {
     res.status(400).send({
       message:
         "StoreName, Address, Latitude, Longitude or DeliveryRadius can not be empty!",
@@ -28,6 +42,7 @@ exports.create = async (req, res) => {
       latitude: latitude,
       longitude: longitude,
       deliveryRadius: deliveryRadius,
+      getDirection: getDirection,
       userId: userId,
     };
     Store.create(newStore)
