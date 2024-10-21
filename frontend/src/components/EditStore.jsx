@@ -56,7 +56,7 @@ const EditStore = () => {
           {/* Store Name */}
           <div className="relative">
             <span className="block text-lg font-medium text-gray-700 mt-3">
-              Store Names
+              Store Name
             </span>
             <input
               type="text"
