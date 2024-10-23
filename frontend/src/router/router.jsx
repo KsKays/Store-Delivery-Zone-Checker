@@ -6,6 +6,10 @@ import EditStore from "../components/EditStore";
 import App from "../App";
 import AddStore from "../components/AddStore";
 import StoreTable from "../components/StoreTable";
+import NotAllowed from "./../pages/NotAllowed";
+import ModOrAdmin from "../pages/ModOrAdminPage";
+import Home from "../pages/dashboard/Home";
+import UserProfilePage from "./../pages/UserProfilePage";
 
 const router = createBrowserRouter([
   {
@@ -14,6 +18,10 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/app",
         element: <App />,
       },
       {
@@ -25,16 +33,32 @@ const router = createBrowserRouter([
         element: <Register />,
       },
       {
+        path: "/userprofilepage",
+        element: <UserProfilePage />,
+      },
+      {
         path: "/editstore/store/:id",
-        element: <EditStore />,
+        element: (
+          <ModOrAdmin>
+            <EditStore />
+          </ModOrAdmin>
+        ),
       },
       {
         path: "/addstore",
-        element: <AddStore />,
+        element: (
+          <ModOrAdmin>
+            <AddStore />
+          </ModOrAdmin>
+        ),
       },
       {
         path: "/storetable",
         element: <StoreTable />,
+      },
+      {
+        path: "/notallowed",
+        element: <NotAllowed />,
       },
     ],
   },

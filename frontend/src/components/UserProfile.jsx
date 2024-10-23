@@ -26,7 +26,7 @@ const UserProfile = () => {
           <a onClick={handleLogout}>Logout</a>
         </li>
         <li>
-          <a href="/userprofile" className="justify-between">
+          <a href="/userprofilepage" className="justify-between">
             Profile
             <span className="badge badge-neutral">New</span>
           </a>
