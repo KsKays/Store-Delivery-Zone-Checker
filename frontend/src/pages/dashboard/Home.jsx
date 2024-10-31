@@ -1,4 +1,3 @@
-import React from "react";
 import storefood from "../../assets/storefood1.png"; // import รูปภาพจาก assets
 
 const Home = () => {

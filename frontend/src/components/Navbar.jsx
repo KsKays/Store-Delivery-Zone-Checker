@@ -17,14 +17,15 @@ const Navbar = () => {
     ROLES_ADMIN: [
       { name: "HOME", link: "/" },
       { name: "ADD", link: "/addstore" },
-      { name: "STORE", link: "/storetable" },
     ],
     ROLES_MODERATOR: [
       { name: "HOME", link: "/" },
       { name: "ADD", link: "/addstore" },
-      { name: "STORE", link: "/storetable" },
     ],
-    ROLES_USER: [{ name: "HOME", link: "/" }],
+    ROLES_USER: [
+      { name: "HOME", link: "/" },
+      { name: "ADD", link: "/addstore" },
+    ],
   };
 
   const renderMenuItem = (menuItem) => (

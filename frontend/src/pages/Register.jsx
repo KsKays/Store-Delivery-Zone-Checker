@@ -1,32 +1,41 @@
 import AuthService from "../services/auth.service";
 import Swal from "sweetalert2";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../contexts/AuthContext"; // นำเข้า context สำหรับตรวจสอบสถานะการล็อกอิน
 
 const Register = () => {
-  const [user, setUser] = useState({
+  const { user } = useAuthContext(); // ใช้ context เพื่อตรวจสอบสถานะของผู้ใช้
+  const navigate = useNavigate();
+
+  // เช็คว่า user มีอยู่หรือไม่
+  useEffect(() => {
+    if (user) {
+      navigate("/"); // ถ้าผู้ใช้ล็อกอินอยู่ ให้ไปที่หน้าแรก
+    }
+  }, [user, navigate]);
+
+  const [newUser, setUser] = useState({
     username: "",
     email: "",
     password: "",
   });
 
-  const navigate = useNavigate();
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUser({ ...user, [name]: value });
+    setUser({ ...newUser, [name]: value });
   };
 
   const handleSubmit = async () => {
     try {
       const register = await AuthService.register(
-        user.username,
-        user.email,
-        user.password
+        newUser.username,
+        newUser.email,
+        newUser.password
       );
       if (register.status === 200) {
         Swal.fire({
-          title: "User Registeration",
+          title: "User Registration",
           text: register.data.message,
           icon: "success",
         });
@@ -34,7 +43,7 @@ const Register = () => {
       }
     } catch (error) {
       Swal.fire({
-        title: "User Registeration",
+        title: "User Registration",
         text: error.response.data.message || error.message,
         icon: "error",
       });

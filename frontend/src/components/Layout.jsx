@@ -7,12 +7,9 @@ const Layout = () => {
   return (
     <AuthProvider>
       <div className="flex flex-col min-h-screen">
-        {" "}
-        {/* ใช้ Flexbox กับ min-h-screen */}
         <Navbar />
-        <div className="flex-grow z-10">
+        <div className="flex-grow">
           {" "}
-          {/* ทำให้เนื้อหาขยายเต็มพื้นที่ */}
           <Outlet />
         </div>
         <Footer />

@@ -1,6 +1,6 @@
 import { Marker, Popup, Circle } from "react-leaflet";
 import L from "leaflet";
-import storeIcon from "../assets/grocery-store.png"; // ตรวจสอบให้แน่ใจว่าพาธนี้ถูกต้อง
+import storeIcon from "../assets/grocery-store.png";
 import { useAuthContext } from "../contexts/AuthContext";
 import Swal from "sweetalert2";
 import StoreService from "../services/store.service";

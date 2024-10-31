@@ -38,19 +38,19 @@ const router = createBrowserRouter([
       },
       {
         path: "/editstore/store/:id",
-        element: (
-          <ModOrAdmin>
-            <EditStore />
-          </ModOrAdmin>
-        ),
+        element: <EditStore />,
       },
+      // {
+      //   path: "/editstore/store/:id",
+      //   element: (
+      //     <ModOrAdmin>
+      //       <EditStore />
+      //     </ModOrAdmin>
+      //   ),
+      // },
       {
         path: "/addstore",
-        element: (
-          <ModOrAdmin>
-            <AddStore />
-          </ModOrAdmin>
-        ),
+        element: <AddStore />,
       },
       {
         path: "/storetable",

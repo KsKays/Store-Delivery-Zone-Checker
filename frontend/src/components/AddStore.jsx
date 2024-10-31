@@ -41,7 +41,7 @@ const AddStore = () => {
           text: "Your store has been successfully added.",
           icon: "success",
         });
-        navigate("/"); // Redirect to store table or any other route
+        navigate("/App"); // Redirect to store table or any other route
       } else {
         Swal.fire({
           title: "Store Addition Failed",

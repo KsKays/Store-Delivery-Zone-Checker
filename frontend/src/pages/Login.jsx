@@ -39,7 +39,7 @@ const Login = () => {
           username: "",
           password: "",
         });
-        navigate("/");
+        navigate("/App");
       }
     } catch (error) {
       Swal.fire({
